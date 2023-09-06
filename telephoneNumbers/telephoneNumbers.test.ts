@@ -3,7 +3,6 @@ import {expect, jest, test, describe} from '@jest/globals';
 
 
 describe('the can', () => {
-/*
   test('countElement be 10', () => {
     expect(fun([
       '0467123456'
@@ -22,7 +21,6 @@ describe('the can', () => {
       '0123'
     ])).toBe(10);
   });
-*/
 
   test('countElement be 28', () => {
     expect(fun([
@@ -31,6 +29,7 @@ describe('the can', () => {
       '112',
       '0468892011',
       '15',
+      '1234n4'
     ])).toBe(28);
   });
   

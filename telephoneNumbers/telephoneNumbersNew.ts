@@ -1,58 +1,79 @@
-class countNumber {
-  countElement: number = 0;
 
-  constructor(){}
+interface Structure {
+  [index: string]: Structure
+}
 
-  setElement (lib, keys, newValue) {
-    var key = keys.shift();
-    if (keys.length) {
-        this.setElement(lib[key], keys, newValue)
-    } else {
-        lib[key] = newValue;
-    }
+class count_number {
+  structure: Structure;
+  constructor(str: Structure){
+    this.structure = str;
+  }
+  get show_struct(){
+    return this.structure;
   }
 
-  numInObj(num: Array<string>) {
+  setElement(obj_in: Structure, way_in: string){  
+    const set_inside = (lib, keys, newValue) => {
+      let key = keys.shift();
+      if (keys.length) {
+          set_inside(lib[key], keys, newValue)
+      } else {
+        const keys = Object.keys(newValue);
+        if (key != undefined) {
+          lib[key][keys[0]] = newValue[keys[0]]
+        } else {
+          lib[keys[0]] = newValue[keys[0]]
+        }
+      }
+    }
+    set_inside(this.structure, way_in.split(''), obj_in)
+  }
+
+  numInObj(num: string[]) {    
     let objRes = {[num[0]]: {}};
     num.splice(0, 1);
-    const ff = (ob) => {
-      ob[Object.keys(ob)[0]][num[0]] = {};
-      num.splice(0, 1);
-      if (num[0] !== undefined) ff(ob[Object.keys(ob)[0]]);
+    if (num.length != 0) {
+      const ff = (ob) => {
+        ob[Object.keys(ob)[0]][num[0]] = {};
+        num.splice(0, 1);
+        if (num[0] != undefined) ff(ob[Object.keys(ob)[0]]);
+      }
+      ff(objRes)  
     }
-    ff(objRes)
     return objRes;
   }
-
-  comparisonNumbers(num: Array<string>, obj: any, num2: Array<string>) {
-    this.countElement = 0;
+  
+  take_way(num_in: Array<string>, way_in: string){
+    const fun = (obj: Structure, num: string[], way: string) => {
+      if (obj[num[0]] != undefined) {        
+        const first: any = num.shift();
+        way = way + first;
+        const res: Array<any> = fun(obj[first], num, way);
+        way = res[1].toString();
+        return [num, way];
+      }      
+      return [num, way]
+    }
     
-    if (obj[num[0]]) {
-      const fstInNum = num.splice(0, 1);
-      num2.push(fstInNum[0]);
-      this.comparisonNumbers(num, obj[fstInNum[0]], num2);
-    } else {
-      this.countElement = num.length;
-      obj = this.numInObj(num);
-    }    
-    return [this.countElement, obj, num2];
+    return fun(this.structure, num_in, way_in)
   }
 }
 
-export const fun = (data: Array<string>) => {
-  const n = data.length;
-  let countElements: any = 0;
-  let objPhones: any = {};
-  const cN = new countNumber();
-  for (let i = 0; i < n; i++) {
-      const telephone: String = data[i]; 
-      const res = cN.comparisonNumbers(telephone.split(''), objPhones, []);      
-      countElements += res[0];
-      if (i === 0) {
-        objPhones = cN.numInObj(telephone.split(''))
-      } else {
-        objPhones = cN.setElement(objPhones, res[2], res[1]);
-      }
-    }
-  return countElements;
+export const fun = (list: Array<string>) => {
+  const base: Structure = {};
+  let counter: Number = 0;
+  const counting_numbers = new count_number(base);
+  list.forEach((el) => {
+    const array_substring_num: Array<string> = el.split('');
+    const res: Array<any> = counting_numbers.take_way(array_substring_num, '');
+    const num:any = res[0];
+    const way: string = res[1];
+    counter = counter + num.length;
+    const object_in = counting_numbers.numInObj(num)
+    counting_numbers.setElement(object_in, way)
+    console.log(counter);
+    
+    console.log(counting_numbers.show_struct);
+  })
+  return counter;
 }
