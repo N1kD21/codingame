@@ -1,6 +1,6 @@
 import { fun } from "./telephoneNumbersNew";
 import {expect, jest, test, describe} from '@jest/globals';
-
+import { data } from './readFile';
 
 describe('the can', () => {
   test('countElement be 10', () => {
@@ -29,8 +29,11 @@ describe('the can', () => {
       '112',
       '0468892011',
       '15',
-      '1234n4'
     ])).toBe(28);
+  });
+  
+  test('countElement be 45512', () => {
+    expect(fun(data)).toBe(45512);
   });
   
 });

@@ -12,40 +12,42 @@ class count_number {
     return this.structure;
   }
 
-  setElement(obj_in: Structure, way_in: string){  
-    const set_inside = (lib, keys, newValue) => {
-      let key = keys.shift();
-      if (keys.length) {
-          set_inside(lib[key], keys, newValue)
+  setElement(obj_in: Structure, way_in: string) {  
+    const set_inside = (lib: Structure, keys: string[], newValue: Structure) => {      
+      if (keys.length > 0) {
+        const key: string = keys[0];
+        keys.shift();
+        set_inside(lib[key], keys, newValue);
       } else {
-        const keys = Object.keys(newValue);
-        if (key != undefined) {
-          lib[key][keys[0]] = newValue[keys[0]]
-        } else {
-          lib[keys[0]] = newValue[keys[0]]
-        }
+        const keys_newValue = Object.keys(newValue);
+        lib[keys_newValue[0]] = newValue[keys_newValue[0]]
       }
-    }
+    }    
     set_inside(this.structure, way_in.split(''), obj_in)
   }
 
   numInObj(num: string[]) {    
-    let objRes = {[num[0]]: {}};
-    num.splice(0, 1);
-    if (num.length != 0) {
-      const ff = (ob) => {
-        ob[Object.keys(ob)[0]][num[0]] = {};
-        num.splice(0, 1);
-        if (num[0] != undefined) ff(ob[Object.keys(ob)[0]]);
+    let objRes = {};
+    if (num.length > 0) {
+      const key: string = num[0]
+      objRes = {[key]: {}}
+      num.shift()
+      const ff = (ob: Structure) => {
+        const newKey = num[0]
+        num.shift()
+        ob[Object.keys(ob)[0]][newKey] = {};
+        if (num.length > 0) ff(ob[Object.keys(ob)[0]]);
       }
-      ff(objRes)  
-    }
+      if (num.length) {
+        ff(objRes)
+      }
+    }  
     return objRes;
   }
   
   take_way(num_in: Array<string>, way_in: string){
     const fun = (obj: Structure, num: string[], way: string) => {
-      if (obj[num[0]] != undefined) {        
+        if (obj[num[0]] != undefined) {        
         const first: any = num.shift();
         way = way + first;
         const res: Array<any> = fun(obj[first], num, way);
@@ -70,10 +72,8 @@ export const fun = (list: Array<string>) => {
     const way: string = res[1];
     counter = counter + num.length;
     const object_in = counting_numbers.numInObj(num)
-    counting_numbers.setElement(object_in, way)
-    console.log(counter);
-    
-    console.log(counting_numbers.show_struct);
+    counting_numbers.setElement(object_in, way)        
   })
+  
   return counter;
 }
